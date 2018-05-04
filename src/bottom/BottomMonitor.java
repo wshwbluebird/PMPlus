@@ -114,7 +114,7 @@ public class BottomMonitor {
             if(cpuOperate[i]!=cpuState[i] && cpuState[i]!=Constant.CPU_FREE){
                 int lastTid =  cpuState[i];
                 runningSet.remove(lastTid);
-                int[] res = stateMap.get(lastTid).resource;
+                int[] res = stateMap.get(lastTid).getResource();
                 for(int r : res) resourceUse[r] = false;
             }
         }
@@ -127,7 +127,7 @@ public class BottomMonitor {
                     throw new Exception("TaskDoubleRun");
                 }
                 runningSet.add(newTid);
-                int[] res = stateMap.get(newTid).resource;
+                int[] res = stateMap.get(newTid).getResource();
 
                 for(int r : res) {
                     if(resourceUse[r]){
@@ -153,9 +153,9 @@ public class BottomMonitor {
                 continue;
             }
 
-            taskState.leftCpuTime--;
-            if(taskState.leftCpuTime == 0){
-                taskState.finishTime = timeTick;
+            taskState.executeCurrentTask();
+            if(taskState.getLeftCpuTime() == 0){
+                taskState.setFinishTime(timeTick);
             }
         }
 
