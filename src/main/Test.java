@@ -10,9 +10,13 @@ import java.io.IOException;
  * 测试用例类
  */
 public class Test {
-    public void test01(){
+
+    /**
+     * 测试样例
+     */
+    public void testSample(){
         try {
-            runTest(2,"src/testFile/test1.txt");
+            runTest(2,"src/testFile/textSample.txt");
         } catch (Exception e) {
             e.getStackTrace();
         }
