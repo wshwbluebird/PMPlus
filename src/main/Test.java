@@ -16,6 +16,8 @@ public class Test {
      */
     public void testSample(){
         try {
+            System.out.println("TestCase: testSample");
+            System.out.print("result: ");
             runTest(2,"src/testFile/textSample.txt");
         } catch (Exception e) {
             e.getStackTrace();
@@ -27,23 +29,11 @@ public class Test {
         BottomMonitor bottomMonitor = new BottomMonitor(fileName,cpuNumber);
         BottomService bottomService = new BottomService(bottomMonitor);
         Schedule schedule = new Schedule(bottomService);
+
         for(int i = 0 ; i < 1000 ; i++){
             Task[] tasks = bottomMonitor.getTaskArrived();
-            if(tasks.length !=0){
-                System.out.println("time: "+i);
-                for(int j = 0 ; j < tasks.length ; j++ ){
-                    Task task = tasks[j];
-                    System.out.println(task.toString());
-                }
-                System.out.println();
-            }
             int[] cpuOperate = new int[cpuNumber];
             schedule.ProcessSchedule(tasks,cpuOperate);
-//            System.out.print("operate: ");
-//            for(Integer d : cpuOperate){
-//                System.out.print(d+" ");
-//            }
-//            System.out.println();
             try {
                 bottomService.runCpu(cpuOperate);
             } catch (Exception e) {
@@ -53,8 +43,15 @@ public class Test {
             bottomMonitor.increment();
         }
 
+        //打印统计结果
         bottomMonitor.printStatistics();
         System.out.println();
+
+        //打印任务队列
+        bottomMonitor.printTaskArrayLog();
+        System.out.println();
+
+        //打印cpu日志
         bottomMonitor.printCpuLog();
     }
 }

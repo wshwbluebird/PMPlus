@@ -266,6 +266,18 @@ public class BottomMonitor {
      * 打印cpu调度记录
      */
     public void printCpuLog(){
+        System.out.println("cpu log:");
         System.out.println(log.toString());
+    }
+
+    /**
+     * 打印任务到达队列
+     */
+    public void printTaskArrayLog(){
+        System.out.println("task arrived list:");
+        arriveMap.forEach((k,v)->{
+            System.out.println("Time: "+k);
+            v.forEach(t-> System.out.println("Arrive: "+t.toString()));
+        });
     }
 }
