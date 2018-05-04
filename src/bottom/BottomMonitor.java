@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.temporal.ValueRange;
 import java.util.*;
 
 /**
@@ -16,6 +17,7 @@ public class BottomMonitor {
     private boolean[] resourceUse = new boolean[Constant.MAX_RESOURCE];
     private int readCnt;
     private int writeCnt;
+    private int cpuChangeTimes;
     private int cpuNumber;
     private int[] cpuState;
     private int timeTick;
@@ -35,6 +37,7 @@ public class BottomMonitor {
 
         readCnt = 0;
         writeCnt = 0;
+        cpuChangeTimes = 0;
 
         List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
         lines.remove(0);
@@ -127,6 +130,19 @@ public class BottomMonitor {
      * @throws Exception
      */
     public void runCpu(int[] cpuOperate) throws Exception {
+
+        for(int i = 0 ; i < cpuNumber ; i++){
+            if(cpuOperate[i]==cpuState[i]){
+                continue;
+            }
+
+            if(cpuOperate[i] == Constant.CPU_FREE || cpuState[i] == Constant.CPU_FREE){
+                this.cpuChangeTimes++;
+            }else{
+                this.cpuChangeTimes+=2;
+            }
+        }
+
         for(int i = 0 ; i < cpuNumber ; i++){
             if(cpuOperate[i]!=cpuState[i] && cpuState[i]!=Constant.CPU_FREE){
                 int lastTid =  cpuState[i];
@@ -176,5 +192,52 @@ public class BottomMonitor {
             }
         }
 
+    }
+
+    public int getReadCnt() {
+        return readCnt;
+    }
+
+    public int getWriteCnt() {
+        return writeCnt;
+    }
+
+    public int getCpuChangeTimes() {
+        return cpuChangeTimes;
+    }
+
+    public boolean isAllTaskFinish(){
+       Collection<TaskState> states = stateMap.values();
+       for(TaskState t : states){
+           if(!t.isFinish()) return false;
+       }
+       return true;
+    }
+
+    public long getToleranceValue(){
+        long ans = 0 ;
+        Collection<TaskState> states = stateMap.values();
+        for(TaskState t : states){
+            int cur = t.getTolerenceValue();
+            if(cur == -1 )  cur = Integer.MAX_VALUE;
+            ans+=cur;
+        }
+        return ans;
+    }
+
+
+    /**
+     * 打印 调度结果的统计信息
+     */
+    public void printStatistics(){
+        if(!isAllTaskFinish()){
+            System.out.println("Fail! At least one task has not been completed");
+        }else{
+            System.out.println("Success! Task completed");
+            System.out.println("Memory Read Count:  "+getReadCnt());
+            System.out.println("Memory write Count: "+getWriteCnt());
+            System.out.println("Cpu environment change time: "+getCpuChangeTimes());
+            System.out.println("Tolerance (lower is better): "+getToleranceValue());
+        }
     }
 }

@@ -25,20 +25,37 @@ public class TaskState {
         return timeTick >= arriveTime;
     }
 
-    public int[] getResource() {
+    int[] getResource() {
         return resource;
     }
 
-    public void setFinishTime(int finishTime) {
+    void setFinishTime(int finishTime) {
         this.finishTime = finishTime;
     }
 
-    public int getLeftCpuTime() {
+    int getLeftCpuTime() {
         return leftCpuTime;
     }
 
-    public void executeCurrentTask(){
+    void executeCurrentTask(){
         if(leftCpuTime > 0)
             this.leftCpuTime--;
+    }
+
+    /**
+     * 计算该任务的不满意得分
+     * @return
+     */
+    int getTolerenceValue(){
+        if(!isFinish()) return -1;
+        int idlWait = finishTime - arriveTime + 1 - cpuTime;
+        assert idlWait >= 0 : "wrong time finish";
+
+        // TODO change magic number
+        if(idlWait == 0)  return 0;
+        if(idlWait < 5) return 2;
+        if(idlWait < 15) return 2 * idlWait;
+        else  return 2<<(idlWait-11);
+
     }
 }

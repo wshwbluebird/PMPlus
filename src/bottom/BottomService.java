@@ -21,7 +21,7 @@ public class BottomService {
      */
     public char readFreeMemory(int offset){
         bottomMonitor.recordMemoryRead();
-        if (offset >= Constant.FREE_MEM_SIZE && offset < 0){
+        if (offset >= Constant.FREE_MEM_SIZE || offset < 0){
             return 0;
         }
         return freeMemory[offset];
@@ -35,7 +35,7 @@ public class BottomService {
      */
     public void writeFreeMemory(int offset, char x){
         bottomMonitor.recordMemoryWrite();
-        if(offset >= Constant.FREE_MEM_SIZE && offset < 0){
+        if(offset >= Constant.FREE_MEM_SIZE || offset < 0){
             return;
         }
         freeMemory[offset] = x;
