@@ -15,21 +15,29 @@ public class BottomService {
 
     /**
      * 对自有内存的读
+     * 如果offset超过范围则返回0
      * @param offset
      * @return
      */
     public char readFreeMemory(int offset){
-        assert offset < Constant.FREE_MEM_SIZE && offset >= 0 : "bad offset";
+        bottomMonitor.recordMemoryRead();
+        if (offset >= Constant.FREE_MEM_SIZE && offset < 0){
+            return 0;
+        }
         return freeMemory[offset];
     }
 
     /**
      * 对自由内存的写
+     * 如果offset超过范围则写无效
      * @param offset
      * @param x
      */
     public void writeFreeMemory(int offset, char x){
-        assert offset < Constant.FREE_MEM_SIZE && offset >= 0 : "bad offset";
+        bottomMonitor.recordMemoryWrite();
+        if(offset >= Constant.FREE_MEM_SIZE && offset < 0){
+            return;
+        }
         freeMemory[offset] = x;
     }
 

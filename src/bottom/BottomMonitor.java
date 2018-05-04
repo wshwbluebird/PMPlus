@@ -32,6 +32,10 @@ public class BottomMonitor {
         arriveMap = new HashMap<>();
         cpuState = new int[cpuNumber];
         runningSet = new HashSet<>();
+
+        readCnt = 0;
+        writeCnt = 0;
+
         List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
         lines.remove(0);
         lines.stream().forEach(t->{
@@ -103,6 +107,19 @@ public class BottomMonitor {
         }
     }
 
+    /**
+     * 记录自由内存读次数+1
+     */
+    public void recordMemoryRead(){
+        this.readCnt++;
+    }
+
+    /**
+     * 记录自由内存写次数+1
+     */
+    public void recordMemoryWrite(){
+        this.writeCnt++;
+    }
 
     /**
      * 底层运行cpu
