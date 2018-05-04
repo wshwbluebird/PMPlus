@@ -46,7 +46,7 @@ public class TaskState {
      * 计算该任务的不满意得分
      * @return
      */
-    int getTolerenceValue(){
+    int getToleranceValue(){
         if(!isFinish()) return -1;
         int idlWait = finishTime - arriveTime + 1 - cpuTime;
         assert idlWait >= 0 : "wrong time finish";

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.temporal.ValueRange;
 import java.util.*;
 
 /**
@@ -21,6 +20,7 @@ public class BottomMonitor {
     private int cpuNumber;
     private int[] cpuState;
     private int timeTick;
+    private StringBuilder log;
 
     /**
      * 从文件中读取指定内容，初始化预定好的任务队列
@@ -38,6 +38,8 @@ public class BottomMonitor {
         readCnt = 0;
         writeCnt = 0;
         cpuChangeTimes = 0;
+
+        log = new StringBuilder();
 
         List<String> lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
         lines.remove(0);
@@ -77,7 +79,6 @@ public class BottomMonitor {
         timeTick++;
     }
 
-
     /**
      * 获得时间片
      * @return
@@ -94,12 +95,11 @@ public class BottomMonitor {
         return cpuNumber;
     }
 
-
     /**
      * 获得当前时间片到达的任务
      * @return
      */
-    public Task[]  getTaskArrived(){
+    public Task[] getTaskArrived(){
         if(arriveMap.containsKey(timeTick)){
             List<Task>  list = arriveMap.get(timeTick);
             Task[] tasks = new Task[list.size()];
@@ -169,8 +169,8 @@ public class BottomMonitor {
                     }
                     resourceUse[r] = true;
                 }
-                cpuState[i] = cpuOperate[i];
             }
+            cpuState[i] = cpuOperate[i];
         }
 
         for(int i = 0 ; i < cpuNumber ; i++) {
@@ -187,6 +187,8 @@ public class BottomMonitor {
             }
 
             taskState.executeCurrentTask();
+            String cur = String.format("Running Task %d by cpu:%d at Time %d\n", runningTid, i, timeTick);
+            log.append(cur);
             if(taskState.getLeftCpuTime() == 0){
                 taskState.setFinishTime(timeTick);
             }
@@ -194,18 +196,34 @@ public class BottomMonitor {
 
     }
 
+    /**
+     * 获得读次数
+     * @return
+     */
     public int getReadCnt() {
         return readCnt;
     }
 
+    /**
+     * 获得内存写次数
+     * @return
+     */
     public int getWriteCnt() {
         return writeCnt;
     }
 
+    /**
+     * 获得cpu环境准换次数
+     * @return
+     */
     public int getCpuChangeTimes() {
         return cpuChangeTimes;
     }
 
+    /**
+     * 判定所有任务是否都已完成
+     * @return
+     */
     public boolean isAllTaskFinish(){
        Collection<TaskState> states = stateMap.values();
        for(TaskState t : states){
@@ -214,17 +232,20 @@ public class BottomMonitor {
        return true;
     }
 
+    /**
+     * 获取所有任务的不满意值
+     * @return
+     */
     public long getToleranceValue(){
         long ans = 0 ;
         Collection<TaskState> states = stateMap.values();
         for(TaskState t : states){
-            int cur = t.getTolerenceValue();
+            int cur = t.getToleranceValue();
             if(cur == -1 )  cur = Integer.MAX_VALUE;
             ans+=cur;
         }
         return ans;
     }
-
 
     /**
      * 打印 调度结果的统计信息
@@ -239,5 +260,12 @@ public class BottomMonitor {
             System.out.println("Cpu environment change time: "+getCpuChangeTimes());
             System.out.println("Tolerance (lower is better): "+getToleranceValue());
         }
+    }
+
+    /**
+     * 打印cpu调度记录
+     */
+    public void printCpuLog(){
+        System.out.println(log.toString());
     }
 }

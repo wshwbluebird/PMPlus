@@ -23,7 +23,7 @@ public class Test {
         BottomMonitor bottomMonitor = new BottomMonitor(fileName,cpuNumber);
         BottomService bottomService = new BottomService(bottomMonitor);
         Schedule schedule = new Schedule(bottomService);
-        for(int i = 0 ; i < 8 ; i++){
+        for(int i = 0 ; i < 1000 ; i++){
             Task[] tasks = bottomMonitor.getTaskArrived();
             if(tasks.length !=0){
                 System.out.println("time: "+i);
@@ -50,5 +50,7 @@ public class Test {
         }
 
         bottomMonitor.printStatistics();
+        System.out.println();
+        bottomMonitor.printCpuLog();
     }
 }

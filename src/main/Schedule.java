@@ -39,15 +39,17 @@ public class Schedule {
         /**
          *  write your code
          */
-//        if(arrivedTask.length == 0) return;
-//        int length = arrivedTask.length;
-//        if(length == 1) {
-//            cpuOperate[0] = arrivedTask[0].tid;
-//            cpuOperate[1] = 1;
-//        }
-//        else {
-//            cpuOperate[0] = arrivedTask[0].tid;
-//            cpuOperate[1] = arrivedTask[1].tid;
-//        }
+        int time = getTimeTick();
+        switch (time){
+//            case 0: cpuOperate[0] = 1; break;
+//            case 1: cpuOperate[0] = 2; break;
+//            case 2: cpuOperate[0] = 2; break;
+//            case 3: cpuOperate[0] = 3; break;
+//            case 4: cpuOperate[0] = 3; break;
+//            case 5: cpuOperate[0] = 4; break;
+//            case 10: cpuOperate[0] = 4; break;
+//            case 11: cpuOperate[0] = 2; break;
+//            default:
+        }
     }
 }
