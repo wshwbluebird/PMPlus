@@ -9,7 +9,6 @@ public class BottomService {
         this.bottomMonitor = bottomMonitor;
     }
 
-
     public int getCpuNumber(){
         return bottomMonitor.getCpuNumber();
     }
