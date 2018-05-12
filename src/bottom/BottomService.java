@@ -1,11 +1,11 @@
 package bottom;
 
 public class BottomService {
-    private char[] freeMemory;
+    private byte[] freeMemory;
     private BottomMonitor bottomMonitor;
 
     public BottomService(BottomMonitor bottomMonitor){
-        freeMemory = new char[Constant.FREE_MEM_SIZE];
+        freeMemory = new byte[Constant.FREE_MEM_SIZE];
         this.bottomMonitor = bottomMonitor;
     }
 
@@ -19,7 +19,7 @@ public class BottomService {
      * @param offset
      * @return
      */
-    public char readFreeMemory(int offset){
+    public byte readFreeMemory(int offset){
         bottomMonitor.recordMemoryRead();
         if (offset >= Constant.FREE_MEM_SIZE || offset < 0){
             return 0;
@@ -33,7 +33,7 @@ public class BottomService {
      * @param offset
      * @param x
      */
-    public void writeFreeMemory(int offset, char x){
+    public void writeFreeMemory(int offset, byte x){
         bottomMonitor.recordMemoryWrite();
         if(offset >= Constant.FREE_MEM_SIZE || offset < 0){
             return;
@@ -56,13 +56,4 @@ public class BottomService {
     public int getTimeTick(){
         return bottomMonitor.getTimeTick();
     }
-
-
-
-
-
-
-
-
-
 }

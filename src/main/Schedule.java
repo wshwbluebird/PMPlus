@@ -1,6 +1,7 @@
 package main;
 
 import bottom.BottomService;
+import bottom.Constant;
 import bottom.Task;
 
 
@@ -8,7 +9,7 @@ import bottom.Task;
  * 调度类
  */
 public abstract class Schedule {
-    protected BottomService bottomService;
+    private BottomService bottomService;
 
 
     public void setBottomService(BottomService bottomService) {
@@ -33,6 +34,26 @@ public abstract class Schedule {
      */
     protected int getCpuNumber(){
         return bottomService.getCpuNumber();
+    }
+
+    /**
+     * 从自由内存中读取一个byte
+     * 如果offset超过范围则返回0
+     * @param offset
+     * @return
+     */
+    protected byte readFreeMemory(int offset){
+        return bottomService.readFreeMemory(offset);
+    }
+
+    /**
+     * 向自由内存中写一个byte
+     * 如果offset超过范围则写无效
+     * @param offset
+     * @param x
+     */
+    public void writeFreeMemory(int offset, byte x){
+        bottomService.writeFreeMemory(offset, x);
     }
 
     /**
