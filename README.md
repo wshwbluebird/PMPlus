@@ -1,3 +1,5 @@
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
 ## 题目描述
 
 假设你有一台计算机，而我们很多任务。这些任务需要提交给计算机来完成，我们希望你能写出一个合理的调度算法，来合理分配你拥有的资源，用这些资源来尽可能快的完成任务
