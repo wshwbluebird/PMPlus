@@ -7,22 +7,33 @@ import main.Schedule;
 
 import java.io.IOException;
 
+/**
+ *  demo：样例版答案
+ *  贪心法进程调度策略
+ *  采用位示图的方法存储资源占有情况
+ *  使用连续存储存放任务pcb
+ *  每轮执行资源可用的，没有执行完的任务
+ */
+
 public class Sgreedy extends Schedule{
 
+    // 最新任务ID其实存放地址
+    private static final int latestTaskBeginner = 0;
+    // cpu状态起始地址
+    private static final int cpuStateBeginner = latestTaskBeginner + 4;
+    // 资源位示图起始地址
+    private static final int resourceBeginner = cpuStateBeginner + 5 * 4;
+    // pcb寻址表起始地址
+    private static final int pcbBitBeginner = resourceBeginner + 128;
+    // pcb存储空间起始地址
+    private static final int pcbBeginner = pcbBitBeginner + 1000*4;
 
-    private static int latestTaskBeginner = 0;
-    private static int cpuStateBeginner = latestTaskBeginner + 4;
-    private static int resourceBeginner = cpuStateBeginner + 5 * 4;
-    private static int pcbBitBeginner = resourceBeginner + 128;
-    private static int pcbBeginner = pcbBitBeginner + 1000*4;
-
-
-    private static int PCB_tidBeginner = 0;
-    private static int PCB_arrivedTimeBeginner = 4;
-    private static int PCB_cpuTimeBeginner = 8;
-    private static int PCB_leftTimeBeginner = 12;
-    private static int PCB_rsLengthBeginner = 16;
-    private static int PCB_resourceBeginner = 20;
+    private static final int PCB_tidBeginner = 0;
+    private static final int PCB_arrivedTimeBeginner = 4;
+    private static final int PCB_cpuTimeBeginner = 8;
+    private static final int PCB_leftTimeBeginner = 12;
+    private static final int PCB_rsLengthBeginner = 16;
+    private static final int PCB_resourceBeginner = 20;
 
 
     @Override
@@ -91,15 +102,28 @@ public class Sgreedy extends Schedule{
         writeInteger(pcbBitBeginner+task.tid*4, newIndex);
     }
 
+    /**
+     * 获得这个任务需要的资源长度
+     * @param taskID
+     * @return
+     */
     private int getTaskResourceLength(int taskID){
         return readInteger(getTaskBeginIndex(taskID)+PCB_rsLengthBeginner);
     }
 
+    /**
+     * 获得存储该任务pcb的内存地址
+     * @param taskID
+     * @return
+     */
     private int getTaskBeginIndex(int taskID){
         return readInteger(pcbBitBeginner+taskID*4);
     }
 
-
+    /**
+     * 获得新到达任务 存放内存地址
+     * @return
+     */
     private int getNewTaskBeginIndex(){
         int latestTaskID = readInteger(latestTaskBeginner);
         if(latestTaskID == 0) return pcbBeginner;
@@ -127,6 +151,11 @@ public class Sgreedy extends Schedule{
         }
     }
 
+    /**
+     * 查看资源是否可用
+     * @param taskID
+     * @return
+     */
     private boolean useResource(int taskID){
         int index = getTaskBeginIndex(taskID);
         int length = readInteger(index+PCB_rsLengthBeginner);
@@ -144,6 +173,10 @@ public class Sgreedy extends Schedule{
         return true;
     }
 
+    /**
+     * 记录剩余时间-1
+     * @param taskID
+     */
     private void countDownLeft(int taskID){
         int index = getTaskBeginIndex(taskID);
         int leftTime = readInteger(index+PCB_leftTimeBeginner);
@@ -152,18 +185,32 @@ public class Sgreedy extends Schedule{
         writeInteger(index+PCB_leftTimeBeginner, leftTime);
     }
 
+    /**
+     * 判断任务是否执行完毕
+     * @param taskID
+     * @return
+     */
     private boolean isTaskFinish(int taskID){
         int index = getTaskBeginIndex(taskID);
         int leftTime = readInteger(index+PCB_leftTimeBeginner);
         return leftTime == 0;
     }
 
+    /**
+     * 将所有资源设为可用
+     */
     private void cleanAllResource(){
         for(int i = 0 ; i < 128 ; i++){
             writeFreeMemory(resourceBeginner+i, (byte) 0);
         }
     }
 
+
+    /**
+     * 执行主函数 用于debug
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         int cpuNumber = 2;
         BottomMonitor bottomMonitor = new BottomMonitor("src/testFile/textSample.txt",cpuNumber);
@@ -179,7 +226,6 @@ public class Sgreedy extends Schedule{
                 bottomService.runCpu(cpuOperate);
             } catch (Exception e) {
                 System.out.println("Fail: "+e.getMessage());
-                e.printStackTrace();
                 return;
             }
             bottomMonitor.increment();

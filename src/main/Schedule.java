@@ -1,7 +1,6 @@
 package main;
 
 import bottom.BottomService;
-import bottom.Constant;
 import bottom.Task;
 
 
@@ -9,10 +8,10 @@ import bottom.Task;
  * 调度类
  */
 public abstract class Schedule {
+
     private BottomService bottomService;
 
-
-    public void setBottomService(BottomService bottomService) {
+    final public void setBottomService(BottomService bottomService) {
         this.bottomService = bottomService;
     }
 
@@ -24,7 +23,7 @@ public abstract class Schedule {
      * 获得当前的时间片
      * @return
      */
-    protected int getTimeTick(){
+    final protected int getTimeTick(){
         return bottomService.getTimeTick();
     }
 
@@ -32,7 +31,7 @@ public abstract class Schedule {
      * 获得cpu数量
      * @return
      */
-    protected int getCpuNumber(){
+    final protected int getCpuNumber(){
         return bottomService.getCpuNumber();
     }
 
@@ -42,7 +41,7 @@ public abstract class Schedule {
      * @param offset
      * @return
      */
-    protected byte readFreeMemory(int offset){
+    final protected byte readFreeMemory(int offset){
         return bottomService.readFreeMemory(offset);
     }
 
@@ -52,14 +51,14 @@ public abstract class Schedule {
      * @param offset
      * @param x
      */
-    public void writeFreeMemory(int offset, byte x){
+    final protected void writeFreeMemory(int offset, byte x){
         bottomService.writeFreeMemory(offset, x);
     }
 
     /**
      * 进程调度代码
-     * @param arrivedTask
-     * @param cpuOperate
+     * @param arrivedTask 到达任务数组， 数组长度不定
+     * @param cpuOperate  cpu操作数组（返回值）数组长度为cpuNumber
      */
      public abstract void ProcessSchedule(Task[] arrivedTask, int[] cpuOperate);
 }
