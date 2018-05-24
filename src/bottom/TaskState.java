@@ -48,14 +48,14 @@ public class TaskState {
      */
     int getToleranceValue(){
         if(!isFinish()) return -1;
-        int idlWait = finishTime - arriveTime + 1 - cpuTime;
+        int idlWait = finishTime - arriveTime + 1;
         assert idlWait >= 0 : "wrong time finish";
 
         // TODO change magic number
         if(idlWait == 0)  return 0;
-        if(idlWait < 5) return 2;
-        if(idlWait < 15) return 2 * idlWait;
-        else  return 2<<(idlWait-11);
+        if(idlWait < 10) return 2;
+        if(idlWait < 32) return 2 * idlWait;
+        else  return 2<<(idlWait-24);
 
     }
 }
