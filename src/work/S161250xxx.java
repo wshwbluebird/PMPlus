@@ -2,6 +2,7 @@ package work;
 
 import bottom.BottomMonitor;
 import bottom.BottomService;
+import bottom.Constant;
 import bottom.Task;
 import main.Schedule;
 
@@ -62,7 +63,7 @@ public class S161250xxx extends Schedule{
         schedule.setBottomService(bottomService);
 
         //外部调用实现类
-        for(int i = 0 ; i < 500 ; i++){
+        for(int i = 0; i < Constant.ITER_NUM ; i++){
             Task[] tasks = bottomMonitor.getTaskArrived();
             int[] cpuOperate = new int[cpuNumber];
 

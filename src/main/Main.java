@@ -17,7 +17,7 @@ public class Main {
                 test.setTester(tester);
                 test.testSample();
             }
-
+ 
 
         });
     }

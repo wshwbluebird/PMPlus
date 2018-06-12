@@ -2,6 +2,7 @@ package work;
 
 import bottom.BottomMonitor;
 import bottom.BottomService;
+import bottom.Constant;
 import bottom.Task;
 import main.Schedule;
 
@@ -218,7 +219,7 @@ public class Sgreedy extends Schedule{
         Schedule schedule =  new Sgreedy();
         schedule.setBottomService(bottomService);
 
-        for(int i = 0 ; i < 1000 ; i++){
+        for(int i = 0; i < Constant.ITER_NUM; i++){
             Task[] tasks = bottomMonitor.getTaskArrived();
             int[] cpuOperate = new int[cpuNumber];
             schedule.ProcessSchedule(tasks,cpuOperate);
