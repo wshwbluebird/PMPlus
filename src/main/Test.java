@@ -111,7 +111,7 @@ public class Test {
 
     }
 
-    private void recordSuccess(int readCnt, int writeCnt, int cpuChange, long tolerance, String testName) throws IOException {
+    private void recordSuccess(long readCnt, long writeCnt, long cpuChange, long tolerance, String testName) throws IOException {
         String sb = "TestCase: " + testName + '\n' +
                 "Memory Read Count:  " + readCnt + '\n' +
                 "Memory Write Count: " + writeCnt + '\n' +

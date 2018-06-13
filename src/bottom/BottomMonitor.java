@@ -14,9 +14,9 @@ public class BottomMonitor {
     private HashMap<Integer,List<Task>> arriveMap;
     private HashSet<Integer> runningSet;
     private boolean[] resourceUse = new boolean[Constant.MAX_RESOURCE+1];
-    private int readCnt;
-    private int writeCnt;
-    private int cpuChangeTimes;
+    private long readCnt;
+    private long writeCnt;
+    private long cpuChangeTimes;
     private int cpuNumber;
     private int[] cpuState;
     private int timeTick;
@@ -200,7 +200,7 @@ public class BottomMonitor {
      * 获得读次数
      * @return
      */
-    public int getReadCnt() {
+    public long getReadCnt() {
         return readCnt;
     }
 
@@ -208,7 +208,7 @@ public class BottomMonitor {
      * 获得内存写次数
      * @return
      */
-    public int getWriteCnt() {
+    public long getWriteCnt() {
         return writeCnt;
     }
 
@@ -216,7 +216,7 @@ public class BottomMonitor {
      * 获得cpu环境准换次数
      * @return
      */
-    public int getCpuChangeTimes() {
+    public long getCpuChangeTimes() {
         return cpuChangeTimes;
     }
 
