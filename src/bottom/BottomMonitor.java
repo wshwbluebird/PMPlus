@@ -13,7 +13,7 @@ public class BottomMonitor {
     private HashMap<Integer,TaskState> stateMap;
     private HashMap<Integer,List<Task>> arriveMap;
     private HashSet<Integer> runningSet;
-    private boolean[] resourceUse = new boolean[Constant.MAX_RESOURCE];
+    private boolean[] resourceUse = new boolean[Constant.MAX_RESOURCE+1];
     private int readCnt;
     private int writeCnt;
     private int cpuChangeTimes;
