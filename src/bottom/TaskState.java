@@ -1,5 +1,9 @@
 package bottom;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class TaskState {
     private int tid;
     private int cpuTime;
@@ -11,7 +15,7 @@ public class TaskState {
     public TaskState(int tid, int cpuTime,int[] resource,int arriveTime){
         this.tid = tid;
         this.cpuTime = cpuTime;
-        this.resource = resource;
+        this.resource = getUniResource(resource);
         this.arriveTime = arriveTime;
         this.leftCpuTime = cpuTime;
         this.finishTime = -1;
@@ -42,6 +46,23 @@ public class TaskState {
             this.leftCpuTime--;
     }
 
+    private int[] getUniResource(int[] resource){
+        Arrays.sort(resource);
+        List<Integer> list = new ArrayList<>();
+        list.add(resource[0]);
+        for(int i=1;i<resource.length;i++){
+            if(!(resource[i]==(list.get(list.size()-1)))){
+                list.add(resource[i]);
+            }
+        }
+
+        int[] ans = new int[list.size()];
+        for(int i = 0 ; i < list.size() ; i++){
+            ans[i] = list.get(i);
+        }
+        return ans;
+    }
+
     /**
      * 计算该任务的不满意得分
      * @return
@@ -55,7 +76,7 @@ public class TaskState {
         if(idlWait == 0)  return 0;
         if(idlWait < 10) return 2;
         if(idlWait < 32) return 2 * idlWait;
-        else  return 2<<(idlWait-24);
+        else  return (idlWait-24)*(idlWait-24);
 
     }
 }

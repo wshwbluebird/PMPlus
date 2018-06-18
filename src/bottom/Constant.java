@@ -12,7 +12,7 @@ public class Constant {
     public static int CPU_FREE = 0;
 
     //迭代轮数
-    public static int ITER_NUM = 5000;
+    public static int ITER_NUM = 8000;
 
     //测试样例超时测试
     public static int RUNNING_MS = 5000;

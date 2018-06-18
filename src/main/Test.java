@@ -18,8 +18,14 @@ public class Test {
 
     private String tester = "Sample1";
 
+    private int passNum =500;
+
     public void setTester(String tester) {
         this.tester = tester;
+    }
+
+    public void clearPassNum() {
+        this.passNum = 0;
     }
 
     /**
@@ -28,10 +34,42 @@ public class Test {
      */
     public void testSample(){
         try {
-            runTest(2,"src/testFile/textSample.txt", "testSample");
-//            for (int i = 1; i <= 1; i++) {
-//                runTestCsv(4, "rand_" + i);
-//            }
+            for (int i = 1; i <= 20; i++) {
+                runTestCsv(4, "rand_" + i);
+            }
+            for (int i = 1; i <= 20; i++) {
+                runTestCsv(4, "rand_long500_" + i);
+            }
+            for (int i = 1; i <= 20; i++) {
+                runTestCsv(4, "rand_long750_" + i);
+            }
+
+            for (int i = 1; i <= 20; i++) {
+                runTestCsv(4, "rand_long50_res50_" + i);
+            }
+
+            for (int i = 1; i <= 20; i++) {
+                runTestCsv(4, "rand_long250_res50_" + i);
+            }
+
+            for (int i = 1; i <= 20; i++) {
+                runTestCsv(4, "rand_long500_res50_" + i);
+            }
+
+            for (int i = 150; i <= 200; i++) {
+                runTestCsv(4, "rand_dup_res_" + i);
+            }
+
+            runTestCsv(4, "test_all_resource");
+            runTestCsv(4, "test_long_task");
+            runTestCsv(4, "test_multi_res");
+            runTestCsv(4, "test_single_res");
+            runTestCsv(4, "test_task_500");
+            runTestCsv(4, "test_task_750");
+            runTestCsv(4, "test_task_1000");
+
+            recordResult(tester,passNum);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,10 +82,11 @@ public class Test {
      * @param testName   测试样例名称
      */
     private void runTestCsv(int cpuNumber, String testName) {
-        System.out.println("Running test " + testName + " on " + tester);
+        //System.out.println("Running test " + testName + " on " + tester);
         Thread t = new Thread(() -> {
             try {
-                runTest(cpuNumber, "src/testFile/" + testName + ".csv", testName);
+                boolean re = runTest(cpuNumber, "src/testFile/" + testName + ".csv", testName);
+                if (re) passNum++;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -66,7 +105,7 @@ public class Test {
     }
 
 
-    private void runTest(int cpuNumber, String fileName, String testName) throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
+    private boolean runTest(int cpuNumber, String fileName, String testName) throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
         BottomMonitor bottomMonitor = new BottomMonitor(fileName,cpuNumber);
         BottomService bottomService = new BottomService(bottomMonitor);
         Class  clazz = Class.forName("work."+tester);
@@ -82,31 +121,24 @@ public class Test {
                     bottomService.runCpu(cpuOperate);
                 } catch (Exception e) {
                     recordFail(testName, e.getMessage());
-                    return;
+                    return false;
                 }
                 bottomMonitor.increment();
             }
         } catch (Exception e) {
             recordFail(testName, String.valueOf(e));
-            return;
+            return false;
         }
 
-//        //打印统计结果
-//        bottomMonitor.printStatistics();
-//        System.out.println();
-//
-//        //打印任务队列
-//        bottomMonitor.printTaskArrayLog();
-//        System.out.println();
-//
-//        //打印cpu日志
-//        bottomMonitor.printCpuLog();
+
         if(bottomMonitor.isAllTaskFinish()){
             recordSuccess(bottomMonitor.getReadCnt(), bottomMonitor.getWriteCnt(),
                     bottomMonitor.getCpuChangeTimes(), bottomMonitor.getToleranceValue(),
                     testName);
+            return true;
         }else{
             recordFail(testName," At least one task has not been completed! ");
+            return false;
         }
 
     }
@@ -129,5 +161,10 @@ public class Test {
 
         Files.write(Paths.get("src/result/"+tester), sb.getBytes(),StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
+    }
+
+    private void recordResult(String testName, int passNum) throws IOException {
+        String res = testName+","+passNum+"\n";
+        Files.write(Paths.get("src/result/correctness.csv"), res.getBytes(),StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
 }
